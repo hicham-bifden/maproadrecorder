@@ -30,6 +30,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+
+
+
+
+
 @Composable
 fun MotDePasseOublieScreen(
     onEnvoyerLienReset: (String) -> Unit,
@@ -45,29 +50,24 @@ fun MotDePasseOublieScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = "Réinitialiser le mot de passe",
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(bottom = 24.dp)
-        )
+        Text("Réinitialiser le mot de passe", style = MaterialTheme.typography.headlineMedium)
+
+        Spacer(modifier = Modifier.height(24.dp))
 
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
             label = { Text("Email") },
             singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email,
-                imeAction = ImeAction.Done
-            ),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             isError = messageErreur != null,
             modifier = Modifier.fillMaxWidth()
         )
         if (messageErreur != null) {
             Text(
                 text = messageErreur!!,
-
-                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(top = 4.dp)
             )
         }
@@ -94,7 +94,7 @@ fun MotDePasseOublieScreen(
         if (messageEnvoye) {
             Text(
                 text = "Un lien de réinitialisation a été envoyé à votre email.",
-                //color = MaterialTheme.colors.primary,
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(bottom = 24.dp)
             )
         }

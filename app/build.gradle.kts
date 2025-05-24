@@ -83,7 +83,7 @@ dependencies {
     // Hilt
     implementation("com.google.dagger:hilt-android:2.48.1")
     kapt("com.google.dagger:hilt-android-compiler:2.48.1")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    
 
     // Autres
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -92,6 +92,8 @@ dependencies {
 
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
 
+    //navigation
+    implementation("androidx.navigation:navigation-compose:2.7.0")
 
 }
 

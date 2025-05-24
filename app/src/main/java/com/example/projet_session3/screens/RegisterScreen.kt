@@ -26,18 +26,20 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.text.KeyboardOptions
 
 
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.ui.text.input.KeyboardType
 
-@OptIn(androidx.benchmark.perfetto.ExperimentalPerfettoTraceProcessorApi::class)
+
 @Composable
 fun RegisterScreen(
-    onRegisterClick: (fullName: String, email: String, password: String) -> Unit,
+    onRegisterSuccess: () -> Unit,
     onLoginClick: () -> Unit
 ) {
-    var fullName by remember { mutableStateOf("") }
+    var nom by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -45,33 +47,33 @@ fun RegisterScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center
     ) {
-        Text("Créer un compte", style = MaterialTheme.typography.headlineMedium)
+        Text("Inscription", style = MaterialTheme.typography.headlineMedium)
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = fullName,
-            onValueChange = { fullName = it },
-            label = { Text("Nom complet") },
+            value = nom,
+            onValueChange = { nom = it },
+            label = { Text("Nom") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Adresse e-mail") },
+            label = { Text("Email") },
             singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = password,
@@ -80,18 +82,22 @@ fun RegisterScreen(
             singleLine = true,
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
-                val icon = if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility
+                val image = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(imageVector = icon, contentDescription = null)
+                    Icon(imageVector = image, contentDescription = null)
                 }
             },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { onRegisterClick(fullName, email, password) },
+            onClick = {
+                // Gérer l'inscription ici, puis appeler onRegisterSuccess()
+                onRegisterSuccess()
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("S'inscrire")
@@ -99,8 +105,11 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Row {
-            Text("Vous avez déjà un compte ? ")
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text("Déjà un compte ? ")
             TextButton(onClick = onLoginClick) {
                 Text("Se connecter")
             }
