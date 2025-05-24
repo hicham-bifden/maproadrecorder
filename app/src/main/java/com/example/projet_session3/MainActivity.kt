@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.projet_session3.screens.LoginScreen
+import com.example.projet_session3.screens.MotDePasseOublieScreen
 import com.example.projet_session3.screens.RegisterScreen
 import com.example.projet_session3.ui.theme.MapRoadRecorderTheme
 
@@ -23,12 +24,14 @@ class MainActivity : ComponentActivity() {
             MapRoadRecorderTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
-                    RegisterScreen(
-                        onRegisterClick = { fullName, email, password ->
-                            // Ici tu appelles ta fonction pour créer un compte (ex: Firebase Auth)
+                    MotDePasseOublieScreen(
+                        onEnvoyerLienReset = { email ->
+                            // Ici, tu peux gérer l'envoi du lien de reset
+                            println("Demande de reset pour : $email")
                         },
-                        onLoginClick = {
-                            // Navigation vers écran login
+                        onRetourConnexion = {
+                            // Ici, tu peux gérer la navigation vers l'écran de connexion
+                            println("Retour vers l'écran de connexion")
                         }
                     )
                 }
