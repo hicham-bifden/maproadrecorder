@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +22,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,19 +34,27 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-
-
-
-
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.projet_session3.viewmodel.AuthState
+import com.example.projet_session3.viewmodel.AuthViewModel
 
 @Composable
 fun LoginScreen(
     onRegisterClick: () -> Unit,
-    onForgotPasswordClick: () -> Unit
+    onForgotPasswordClick: () -> Unit,
+    viewModel: AuthViewModel = viewModel()
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+    
+    val authState by viewModel.authState.collectAsState()
+
+    LaunchedEffect(authState) {
+        if (authState is AuthState.Success) {
+            // Navigation vers l'écran principal
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -82,6 +93,14 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
+        if (authState is AuthState.Error) {
+            Text(
+                text = (authState as AuthState.Error).message,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
+
         Spacer(modifier = Modifier.height(8.dp))
 
         TextButton(onClick = onForgotPasswordClick) {
@@ -91,12 +110,15 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = {
-                // Gérer la connexion ici
-            },
-            modifier = Modifier.fillMaxWidth()
+            onClick = { viewModel.login(email, password) },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = authState !is AuthState.Loading
         ) {
-            Text("Se connecter")
+            if (authState is AuthState.Loading) {
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
+            } else {
+                Text("Se connecter")
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
