@@ -1,4 +1,4 @@
-package com.example.maproadrecorder
+package com.example.projet_session3
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

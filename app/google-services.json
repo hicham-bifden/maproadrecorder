@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "397620903437",
+    "firebase_url": "https://bifden.firebaseio.com",
+    "project_id": "bifden",
+    "storage_bucket": "bifden.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:397620903437:android:a79c3cd771b2ed44f61f44",
+        "android_client_info": {
+          "package_name": "com.example.application_mobile_golocalise"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "397620903437-ldne69fdf415e1chsqfssceu5k4n0v6l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.application_mobile_golocalise",
+            "certificate_hash": "796443f26e0ad22876e46a34b288b05dedcd1a45"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLMZBk8Xe1Gagiv-o9f06UKoIe0Kc2jx4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:397620903437:android:71f27bd161ef663ff61f44",
+        "android_client_info": {
+          "package_name": "com.example.projet_session3"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "397620903437-7jhoilpfk74ff1sm6jl2mabgug5nptfq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.projet_session3",
+            "certificate_hash": "796443f26e0ad22876e46a34b288b05dedcd1a45"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLMZBk8Xe1Gagiv-o9f06UKoIe0Kc2jx4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

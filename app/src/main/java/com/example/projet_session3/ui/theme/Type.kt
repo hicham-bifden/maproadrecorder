@@ -1,4 +1,4 @@
-package com.example.maproadrecorder.ui.theme
+package com.example.projet_session3.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
