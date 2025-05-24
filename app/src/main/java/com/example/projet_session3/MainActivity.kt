@@ -11,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.projet_session3.screens.LoginScreen
+import com.example.projet_session3.screens.RegisterScreen
 import com.example.projet_session3.ui.theme.MapRoadRecorderTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,9 +22,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             MapRoadRecorderTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+
+                    RegisterScreen(
+                        onRegisterClick = { fullName, email, password ->
+                            // Ici tu appelles ta fonction pour créer un compte (ex: Firebase Auth)
+                        },
+                        onLoginClick = {
+                            // Navigation vers écran login
+                        }
                     )
                 }
             }
