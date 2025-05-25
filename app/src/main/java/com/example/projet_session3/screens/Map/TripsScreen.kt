@@ -33,19 +33,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.projet_session3.model.Trip
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavController
 
 
 ////
 
 
 @Composable
-fun TripsScreen(tripsList: List<Trip>) {
+fun TripsScreen(
+    navController: NavController,
+    tripsList: List<Trip>
+) {
     var showDeleteDialog by remember { mutableStateOf(false) }
     var tripToDelete by remember { mutableStateOf<Trip?>(null) }
 
-    Column(modifier = Modifier
-        .padding(16.dp)
-        .fillMaxSize()
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxSize()
     ) {
         Text(
             text = "Mes Voyages",
@@ -64,9 +69,17 @@ fun TripsScreen(tripsList: List<Trip>) {
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(text = trip.title, style = MaterialTheme.typography.titleLarge)
-                    Text(text = trip.description, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+                    Text(
+                        text = trip.description,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Gray
+                    )
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = "📅 ${trip.date}", style = MaterialTheme.typography.labelSmall, color = Color.DarkGray)
+                    Text(
+                        text = "📅 ${trip.date}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color.DarkGray
+                    )
 
                     Spacer(modifier = Modifier.height(12.dp))
 
@@ -75,13 +88,13 @@ fun TripsScreen(tripsList: List<Trip>) {
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         IconButton(onClick = {
-                            // TODO: Naviguer vers les détails du voyage
+                            navController.navigate("tripDetail/${trip.id}")
                         }) {
                             Icon(Icons.Default.Info, contentDescription = "Détails", tint = Color(0xFF2196F3))
                         }
 
                         IconButton(onClick = {
-                            // TODO: Naviguer vers l'écran de modification
+                            navController.navigate("tripDetail/${trip.id}") // Optionnel
                         }) {
                             Icon(Icons.Default.Edit, contentDescription = "Modifier", tint = Color(0xFFFF9800))
                         }
@@ -106,7 +119,7 @@ fun TripsScreen(tripsList: List<Trip>) {
             text = { Text("Es-tu sûr de vouloir supprimer \"${tripToDelete?.title}\" ?") },
             confirmButton = {
                 TextButton(onClick = {
-                    // TODO: Supprimer le voyage de la liste réelle
+                    // TODO: Supprimer le voyage
                     showDeleteDialog = false
                 }) {
                     Text("Oui", color = Color.Red)

@@ -14,25 +14,20 @@ import androidx.navigation.compose.rememberNavController
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
+
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
+ import androidx.compose.ui.Modifier
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.ui.text.input.KeyboardType
-import com.example.projet_session3.model.Trip
-import kotlin.String
+ import com.example.projet_session3.model.Trip
+
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,12 +35,11 @@ import kotlin.String
 fun MainScreen(navController: NavController) {
     val bottomNavController = rememberNavController()
 
-    // Exemple de liste de voyages
+    // Exemple de liste fictive de voyages
     val fakeTrips = remember {
         listOf(
-            Trip("1","Voyage à Marrakech", "Balade dans le désert", "2025-05-23"),
-            Trip("1","Week-end à Québec", "Visite du Vieux-Québec", "2025-05-01")
-
+            Trip("1", "Voyage à Marrakech", "Balade dans le désert", "2025-05-23"),
+            Trip("2", "Week-end à Québec", "Visite du Vieux-Québec", "2025-05-01")
         )
     }
 
@@ -55,6 +49,7 @@ fun MainScreen(navController: NavController) {
                 title = { Text("Bonjour, utilisateur") },
                 actions = {
                     IconButton(onClick = {
+                        // Déconnexion → retourne à l'écran de login
                         navController.navigate("login") {
                             popUpTo("main") { inclusive = true }
                         }
@@ -98,7 +93,7 @@ fun MainScreen(navController: NavController) {
                 MapScreen()
             }
             composable("trips") {
-                TripsScreen(tripsList = fakeTrips)
+                TripsScreen(tripsList = fakeTrips, navController = navController)
             }
             composable("settings") {
                 SettingsScreen()
