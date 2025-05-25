@@ -1,7 +1,5 @@
 package com.example.projet_session3.screens.Map
 
-
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +23,7 @@ import androidx.compose.ui.unit.dp
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
@@ -34,17 +33,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.projet_session3.model.Trip
-
-
-
-import androidx.compose.material.icons.filled.ArrowBack
-
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
+import com.example.projet_session3.helper.BottomNavigationBar
+
 
 ////
-
-
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -74,6 +68,9 @@ fun TripDetailScreen(
                     }
                 }
             )
+        },
+        bottomBar = {
+            BottomNavigationBar(navController = navController)
         }
     ) { padding ->
         Column(

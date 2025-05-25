@@ -25,8 +25,6 @@ import com.example.projet_session3.ui.theme.MapRoadRecorderTheme
 
 
 
-
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +37,7 @@ class MainActivity : ComponentActivity() {
             MapRoadRecorderTheme {
                 val navController = rememberNavController()
 
-                // Exemple de liste fictive de trips (à remplacer par ViewModel plus tard)
+                // Liste simulée de voyages (à remplacer par un ViewModel plus tard)
                 val tripsList = remember {
                     mutableStateOf(
                         listOf(
@@ -49,7 +47,7 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
-                NavHost(navController = navController, startDestination = "main") {
+                NavHost(navController = navController, startDestination = "login") {
 
                     composable("login") {
                         LoginScreen(
@@ -67,8 +65,11 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable("main") {
-                        // Affichage de la liste des voyages
-                        TripsScreen(navController, tripsList.value)
+                        // Page principale avec navigation bas et top bar
+                        MainScreen(
+                            navController = navController,
+                            tripsList = tripsList.value
+                        )
                     }
 
                     composable("tripDetail/{tripId}") { backStackEntry ->
@@ -88,10 +89,7 @@ class MainActivity : ComponentActivity() {
 
                     composable("motdepasseoublie") {
                         MotDePasseOublieScreen(
-                            onEnvoyerLienReset = { email ->
-                                println("Lien de réinitialisation envoyé à $email")
-                            },
-                            onRetourConnexion = { navController.navigate("login") }
+                            onBackToLogin = { navController.navigate("login") }
                         )
                     }
                 }
