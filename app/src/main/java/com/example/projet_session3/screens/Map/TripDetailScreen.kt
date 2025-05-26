@@ -1,5 +1,7 @@
 package com.example.projet_session3.screens.Map
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -43,6 +45,9 @@ import com.google.maps.android.compose.*
 import kotlinx.coroutines.launch
 import java.net.URL
 import org.json.JSONObject
+import androidx.compose.ui.platform.LocalContext
+
+private const val TAG = "TripDetailScreen"
 
 ////
 
@@ -59,6 +64,7 @@ fun TripDetailScreen(
     var showRoute by remember { mutableStateOf(false) }
     var routePoints by remember { mutableStateOf<List<LatLng>>(emptyList()) }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     // Récupérer les points de départ et d'arrivée
     val startPosition = trip.positions.firstOrNull()
@@ -188,52 +194,78 @@ fun TripDetailScreen(
                             // Bouton flottant avec icône de voiture
                             FloatingActionButton(
                                 onClick = {
+                                    Log.d(TAG, "Bouton cliqué - showRoute: $showRoute")
+                                    Toast.makeText(context, "Chargement de l'itinéraire...", Toast.LENGTH_SHORT).show()
                                     showRoute = !showRoute
                                     if (showRoute) {
                                         scope.launch {
                                             try {
+                                                val origin = "${startPosition.latitude},${startPosition.longitude}"
+                                                val destination = "${endPosition.latitude},${endPosition.longitude}"
                                                 val url = "https://maps.googleapis.com/maps/api/directions/json?" +
-                                                        "origin=${startPosition.latitude},${startPosition.longitude}" +
-                                                        "&destination=${endPosition.latitude},${endPosition.longitude}" +
+                                                        "origin=$origin" +
+                                                        "&destination=$destination" +
                                                         "&mode=driving" +
                                                         "&key=AIzaSyA5bm2TRpXSpAKWUCk5CzeQy-fwO7n3Pq4"
                                                 
+                                                Log.d(TAG, "URL de la requête: $url")
+                                                Toast.makeText(context, "Requête en cours...", Toast.LENGTH_SHORT).show()
+                                                
                                                 val response = URL(url).readText()
+                                                Log.d(TAG, "Réponse reçue: $response")
+                                                
                                                 val json = JSONObject(response)
-                                                val routes = json.getJSONArray("routes")
-                                                if (routes.length() > 0) {
-                                                    val route = routes.getJSONObject(0)
-                                                    val legs = route.getJSONArray("legs")
-                                                    val leg = legs.getJSONObject(0)
-                                                    val steps = leg.getJSONArray("steps")
-                                                    
-                                                    val points = mutableListOf<LatLng>()
-                                                    for (i in 0 until steps.length()) {
-                                                        val step = steps.getJSONObject(i)
-                                                        val startLocation = step.getJSONObject("start_location")
-                                                        points.add(LatLng(
-                                                            startLocation.getDouble("lat"),
-                                                            startLocation.getDouble("lng")
-                                                        ))
+                                                val status = json.getString("status")
+                                                Log.d(TAG, "Status de la réponse: $status")
+                                                
+                                                if (status == "OK") {
+                                                    val routes = json.getJSONArray("routes")
+                                                    if (routes.length() > 0) {
+                                                        val route = routes.getJSONObject(0)
+                                                        val legs = route.getJSONArray("legs")
+                                                        val leg = legs.getJSONObject(0)
+                                                        val steps = leg.getJSONArray("steps")
                                                         
-                                                        // Ajouter aussi le point de fin du dernier step
-                                                        if (i == steps.length() - 1) {
-                                                            val endLocation = step.getJSONObject("end_location")
+                                                        val points = mutableListOf<LatLng>()
+                                                        for (i in 0 until steps.length()) {
+                                                            val step = steps.getJSONObject(i)
+                                                            val startLocation = step.getJSONObject("start_location")
                                                             points.add(LatLng(
-                                                                endLocation.getDouble("lat"),
-                                                                endLocation.getDouble("lng")
+                                                                startLocation.getDouble("lat"),
+                                                                startLocation.getDouble("lng")
                                                             ))
+                                                            
+                                                            if (i == steps.length() - 1) {
+                                                                val endLocation = step.getJSONObject("end_location")
+                                                                points.add(LatLng(
+                                                                    endLocation.getDouble("lat"),
+                                                                    endLocation.getDouble("lng")
+                                                                ))
+                                                            }
                                                         }
+                                                        routePoints = points
+                                                        Log.d(TAG, "Itinéraire chargé avec ${points.size} points")
+                                                        Toast.makeText(context, "Itinéraire chargé !", Toast.LENGTH_SHORT).show()
+                                                    } else {
+                                                        Log.e(TAG, "Aucun itinéraire trouvé")
+                                                        Toast.makeText(context, "Aucun itinéraire trouvé", Toast.LENGTH_LONG).show()
+                                                        showRoute = false
                                                     }
-                                                    routePoints = points
+                                                } else {
+                                                    Log.e(TAG, "Erreur API: $status")
+                                                    Toast.makeText(context, "Erreur API: $status", Toast.LENGTH_LONG).show()
+                                                    showRoute = false
                                                 }
                                             } catch (e: Exception) {
-                                                e.printStackTrace()
+                                                Log.e(TAG, "Erreur détaillée", e)
+                                                Toast.makeText(context, "Erreur: ${e.message}", Toast.LENGTH_LONG).show()
                                                 showRoute = false
                                             }
                                         }
                                     } else {
                                         routePoints = emptyList()
+                                        Log.d(TAG, "Retour à la ligne droite")
+                                        Toast.makeText(context, "Retour à la ligne droite", Toast.LENGTH_SHORT).show()
                                     }
                                 },
                                 modifier = Modifier
