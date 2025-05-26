@@ -83,7 +83,6 @@ class TripViewModel : ViewModel() {
             positions = currentTrip.positions + Position(endPosition.latitude, endPosition.longitude, "fin")
         )
 
-        // ⚡ Sauvegarde dans Firestore (collection "trips_v3")
         tripsCollection.document(updatedTrip.id)
             .set(updatedTrip)
             .addOnSuccessListener {
@@ -104,6 +103,17 @@ class TripViewModel : ViewModel() {
             }
             .addOnFailureListener { e ->
                 Log.e("Firestore", "Erreur lors de la suppression", e)
+            }
+    }
+
+    fun updateTrip(trip: Trip) {
+        tripsCollection.document(trip.id)
+            .set(trip)
+            .addOnSuccessListener {
+                Log.d("Firestore", "Voyage mis à jour avec succès")
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Erreur lors de la mise à jour", e)
             }
     }
 }

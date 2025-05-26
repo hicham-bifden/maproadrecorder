@@ -7,7 +7,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.projet_session3.ViewModel.TripViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.projet_session3.screens.Map.TripDetailScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -22,7 +22,6 @@ fun MainScreen(
     onLogout: () -> Unit
 ) {
     val navController = rememberNavController()
-    val bottomNavController = rememberNavController()
     val viewModel: TripViewModel = viewModel()
 
     Scaffold(
@@ -38,7 +37,7 @@ fun MainScreen(
         },
         bottomBar = {
             NavigationBar {
-                val currentRoute = bottomNavController.currentBackStackEntryAsState().value?.destination?.route
+                val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
                 NavigationBarItem(
                     icon = { Icon(Icons.Default.Map, contentDescription = "Carte") },
@@ -46,8 +45,8 @@ fun MainScreen(
                     selected = currentRoute == "map",
                     onClick = {
                         if (currentRoute != "map") {
-                            bottomNavController.navigate("map") {
-                                popUpTo(bottomNavController.graph.startDestinationId)
+                            navController.navigate("map") {
+                                popUpTo(navController.graph.startDestinationId)
                                 launchSingleTop = true
                             }
                         }
@@ -60,8 +59,8 @@ fun MainScreen(
                     selected = currentRoute == "trips",
                     onClick = {
                         if (currentRoute != "trips") {
-                            bottomNavController.navigate("trips") {
-                                popUpTo(bottomNavController.graph.startDestinationId)
+                            navController.navigate("trips") {
+                                popUpTo(navController.graph.startDestinationId)
                                 launchSingleTop = true
                             }
                         }
@@ -74,8 +73,8 @@ fun MainScreen(
                     selected = currentRoute == "settings",
                     onClick = {
                         if (currentRoute != "settings") {
-                            bottomNavController.navigate("settings") {
-                                popUpTo(bottomNavController.graph.startDestinationId)
+                            navController.navigate("settings") {
+                                popUpTo(navController.graph.startDestinationId)
                                 launchSingleTop = true
                             }
                         }
@@ -85,7 +84,7 @@ fun MainScreen(
         }
     ) { paddingValues ->
         NavHost(
-            navController = bottomNavController,
+            navController = navController,
             startDestination = "map",
             modifier = Modifier.padding(paddingValues)
         ) {
@@ -100,6 +99,21 @@ fun MainScreen(
                 Box(modifier = Modifier.fillMaxSize()) {
                     Text("Paramètres")
                 }
+            }
+            composable("tripDetail/{tripId}") { backStackEntry ->
+                val tripId = backStackEntry.arguments?.getString("tripId")
+                val selectedTrip = viewModel.trips.value.find { it.id == tripId }
+
+                selectedTrip?.let {
+                    TripDetailScreen(
+                        navController = navController,
+                        trip = it,
+                        onSave = { updatedTrip ->
+                            viewModel.updateTrip(updatedTrip)
+                            navController.popBackStack()
+                        }
+                    )
+                } ?: Text("Voyage introuvable")
             }
         }
     }

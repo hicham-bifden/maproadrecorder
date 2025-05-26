@@ -13,13 +13,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.projet_session3.helper.AuthPrefHelper
 import com.example.projet_session3.helper.PrefHelper
-import com.example.projet_session3.model.Trip
+import com.example.projet_session3.ViewModel.Trip
 import com.example.projet_session3.screens.Auth.LoginScreen
 import com.example.projet_session3.screens.Auth.MotDePasseOublieScreen
 import com.example.projet_session3.screens.Auth.RegisterScreen
 import com.example.projet_session3.screens.Map.MainScreen
 import com.example.projet_session3.screens.Map.TripDetailScreen
-import com.example.projet_session3.screens.Map.TripsScreen
 import com.example.projet_session3.ui.theme.MapRoadRecorderTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
