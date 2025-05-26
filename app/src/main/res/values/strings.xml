@@ -1,3 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MapRoadRecorder</string>
+    
+    <!-- Écran de connexion -->
+    <string name="login_title">Connexion</string>
+    <string name="email">Email</string>
+    <string name="password">Mot de passe</string>
+    <string name="forgot_password">Mot de passe oublié ?</string>
+    <string name="login_button">Se connecter</string>
+    <string name="not_registered">Pas encore inscrit ?</string>
+    <string name="register">S\'inscrire</string>
+    
+    <!-- Écran d'inscription -->
+    <string name="register_title">Inscription</string>
+    <string name="confirm_password">Confirmer le mot de passe</string>
+    <string name="register_button">S\'inscrire</string>
+    <string name="already_registered">Déjà inscrit ?</string>
+    <string name="login">Se connecter</string>
+    
+    <!-- Écran de mot de passe oublié -->
+    <string name="reset_password_title">Réinitialisation du mot de passe</string>
+    <string name="reset_password_success">Un email de réinitialisation a été envoyé à votre adresse email.</string>
+    <string name="send_reset_link">Envoyer le lien de réinitialisation</string>
+    <string name="back_to_login">Retour à la connexion</string>
+    
+    <!-- Écran des voyages -->
+    <string name="my_trips">Mes Voyages</string>
+    <string name="star_tbtn">Commencer</string>
+    <string name="no_trips">Aucun voyage enregistré</string>
+    
+    <!-- Écran de détail du voyage -->
+    <string name="trip_details">Détails du voyage</string>
+    <string name="edit_trip">Modifier le voyage</string>
+    <string name="back">Retour</string>
+    <string name="edit">Modifier</string>
+    <string name="title">Titre</string>
+    <string name="description">Description</string>
+    <string name="save">Enregistrer</string>
+    <string name="date">Date</string>
+    <string name="show_straight_line">Afficher ligne droite</string>
+    <string name="show_road_route">Afficher itinéraire routier</string>
+    
+    <!-- Écran de la carte -->
+    <string name="save_trip">Enregistrer le voyage</string>
+    <string name="cancel">Annuler</string>
+    <string name="loading_route">Chargement de l\'itinéraire...</string>
+    <string name="route_loaded">Itinéraire chargé !</string>
+    <string name="error">Erreur</string>
 </resources>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MapRoadRecorder</string>
+    
+    <!-- Login Screen -->
+    <string name="login_title">Login</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="login_button">Login</string>
+    <string name="not_registered">Not registered yet?</string>
+    <string name="register">Register</string>
+    
+    <!-- Register Screen -->
+    <string name="register_title">Registration</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="register_button">Register</string>
+    <string name="already_registered">Already registered?</string>
+    <string name="login">Login</string>
+    
+    <!-- Forgot Password Screen -->
+    <string name="reset_password_title">Password Reset</string>
+    <string name="reset_password_success">A reset link has been sent to your email address.</string>
+    <string name="send_reset_link">Send Reset Link</string>
+    <string name="back_to_login">Back to Login</string>
+    
+    <!-- Trips Screen -->
+    <string name="my_trips">My Trips</string>
+    <string name="star_tbtn">Start</string>
+    <string name="no_trips">No trips recorded</string>
+    
+    <!-- Trip Detail Screen -->
+    <string name="trip_details">Trip Details</string>
+    <string name="edit_trip">Edit Trip</string>
+    <string name="back">Back</string>
+    <string name="edit">Edit</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="save">Save</string>
+    <string name="date">Date</string>
+    <string name="show_straight_line">Show Straight Line</string>
+    <string name="show_road_route">Show Road Route</string>
+    
+    <!-- Map Screen -->
+    <string name="save_trip">Save Trip</string>
+    <string name="cancel">Cancel</string>
+    <string name="loading_route">Loading route...</string>
+    <string name="route_loaded">Route loaded!</string>
+    <string name="error">Error</string>
+</resources> 
