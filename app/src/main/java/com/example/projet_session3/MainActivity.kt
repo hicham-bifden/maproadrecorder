@@ -47,8 +47,7 @@ class MainActivity : ComponentActivity() {
                         mutableStateOf(
                             listOf(
                                 Trip(id = "1", title = "Voyage à Paris", description = "Un beau voyage", date = "2025-06-01"),
-                                Trip(id = "2", title = "Safari au Kenya", description = "Aventure dans la savane", date = "2025-07-15")
-                            )
+                                 )
                         )
                     }
 

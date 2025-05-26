@@ -47,6 +47,8 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.launch
+import androidx.compose.ui.res.stringResource
+import com.example.projet_session3.R
 
 private const val TAG = "TripDetailScreen"
 
@@ -84,7 +86,7 @@ fun TripDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (isEditing) "Modifier le voyage" else "Détails du voyage") },
+                title = { Text(if (isEditing) stringResource(R.string.edit_trip) else stringResource(R.string.trip_details)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Retour")
@@ -109,7 +111,7 @@ fun TripDetailScreen(
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
-                    label = { Text("Titre") },
+                    label = { Text(stringResource(R.string.title)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -117,7 +119,7 @@ fun TripDetailScreen(
                 OutlinedTextField(
                     value = description,
                     onValueChange = { description = it },
-                    label = { Text("Description") },
+                    label = { Text(stringResource(R.string.description)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(120.dp)
@@ -130,7 +132,7 @@ fun TripDetailScreen(
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Enregistrer")
+                    Text(stringResource(R.string.save))
                 }
             } else {
                 Text("📌 $title", style = MaterialTheme.typography.headlineSmall)

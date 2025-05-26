@@ -2,6 +2,11 @@
 <resources>
     <string name="app_name">MapRoadRecorder</string>
     
+    <!-- Bottom Navigation -->
+    <string name="nav_map">Map</string>
+    <string name="nav_trips">Trips</string>
+    <string name="nav_profile">Profile</string>
+    
     <!-- Login Screen -->
     <string name="login_title">Login</string>
     <string name="email">Email</string>
@@ -26,7 +31,7 @@
     
     <!-- Trips Screen -->
     <string name="my_trips">My Trips</string>
-    <string name="star_tbtn">Start</string>
+    <string name="start_button">Start</string>
     <string name="no_trips">No trips recorded</string>
     
     <!-- Trip Detail Screen -->

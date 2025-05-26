@@ -13,6 +13,7 @@ import com.example.projet_session3.model.AuthState
 import com.example.projet_session3.model.AuthViewModel
 
 @Composable
+
 fun MotDePasseOublieScreen(
     onBackToLogin: () -> Unit,
     viewModel: AuthViewModel = viewModel()

@@ -15,6 +15,8 @@ import com.example.projet_session3.ViewModel.TripViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.projet_session3.screens.Map.TripDetailScreen
+import androidx.compose.ui.res.stringResource
+import com.example.projet_session3.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,8 +42,8 @@ fun MainScreen(
                 val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
                 NavigationBarItem(
-                    icon = { Icon(Icons.Default.Map, contentDescription = "Carte") },
-                    label = { Text("Carte") },
+                    icon = { Icon(Icons.Default.Map, contentDescription = stringResource(R.string.nav_map)) },
+                    label = { Text(stringResource(R.string.nav_map)) },
                     selected = currentRoute == "map",
                     onClick = {
                         if (currentRoute != "map") {
@@ -54,8 +56,8 @@ fun MainScreen(
                 )
 
                 NavigationBarItem(
-                    icon = { Icon(Icons.Default.List, contentDescription = "Voyages") },
-                    label = { Text("Voyages") },
+                    icon = { Icon(Icons.Default.List, contentDescription = stringResource(R.string.nav_trips)) },
+                    label = { Text(stringResource(R.string.nav_trips)) },
                     selected = currentRoute == "trips",
                     onClick = {
                         if (currentRoute != "trips") {
@@ -68,8 +70,8 @@ fun MainScreen(
                 )
 
                 NavigationBarItem(
-                    icon = { Icon(Icons.Default.Settings, contentDescription = "Paramètres") },
-                    label = { Text("Paramètres") },
+                    icon = { Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.nav_profile)) },
+                    label = { Text(stringResource(R.string.nav_profile)) },
                     selected = currentRoute == "settings",
                     onClick = {
                         if (currentRoute != "settings") {
