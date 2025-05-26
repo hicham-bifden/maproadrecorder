@@ -17,6 +17,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.projet_session3.screens.Map.TripDetailScreen
 import androidx.compose.ui.res.stringResource
 import com.example.projet_session3.R
+import androidx.compose.ui.platform.LocalContext
+import androidx.appcompat.app.AppCompatDelegate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,6 +27,7 @@ fun MainScreen(
 ) {
     val navController = rememberNavController()
     val viewModel: TripViewModel = viewModel()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -97,10 +100,17 @@ fun MainScreen(
                 TripsScreen(navController = navController, viewModel = viewModel)
             }
             composable("settings") {
-                // TODO: Implémenter l'écran des paramètres
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Text("Paramètres")
-                }
+                SettingsScreen(
+                    context = context,
+                    onThemeChanged = { isDarkMode ->
+                        AppCompatDelegate.setDefaultNightMode(
+                            if (isDarkMode) 
+                                AppCompatDelegate.MODE_NIGHT_YES 
+                            else 
+                                AppCompatDelegate.MODE_NIGHT_NO
+                        )
+                    }
+                )
             }
             composable("tripDetail/{tripId}") { backStackEntry ->
                 val tripId = backStackEntry.arguments?.getString("tripId")

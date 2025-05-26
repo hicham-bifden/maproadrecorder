@@ -1,10 +1,14 @@
 package com.example.projet_session3
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.core.view.WindowCompat
@@ -19,23 +23,37 @@ import com.example.projet_session3.screens.Auth.MotDePasseOublieScreen
 import com.example.projet_session3.screens.Auth.RegisterScreen
 import com.example.projet_session3.screens.Map.MainScreen
 import com.example.projet_session3.screens.Map.TripDetailScreen
+import com.example.projet_session3.screens.Map.SettingsScreen
 import com.example.projet_session3.ui.theme.MapRoadRecorderTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
+        
+        val authPrefHelper = AuthPrefHelper(this)
+        // Appliquer le mode sombre initial
+        AppCompatDelegate.setDefaultNightMode(
+            if (authPrefHelper.isDarkMode()) 
+                AppCompatDelegate.MODE_NIGHT_YES 
+            else 
+                AppCompatDelegate.MODE_NIGHT_NO
+        )
 
         setContent {
             val prefHelper = PrefHelper(this)
             val authPrefHelper = AuthPrefHelper(this)
-            prefHelper.isDarkModeEnabled()
+            var isDarkMode by remember { mutableStateOf(authPrefHelper.isDarkMode()) }
 
-            MapRoadRecorderTheme {
+            MapRoadRecorderTheme(darkTheme = isDarkMode) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -47,7 +65,7 @@ class MainActivity : ComponentActivity() {
                         mutableStateOf(
                             listOf(
                                 Trip(id = "1", title = "Voyage à Paris", description = "Un beau voyage", date = "2025-06-01"),
-                                 )
+                            )
                         )
                     }
 
@@ -85,6 +103,19 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate("login") {
                                         popUpTo("main") { inclusive = true }
                                     }
+                                }
+                            )
+                        }
+                        composable("settings") {
+                            SettingsScreen(
+                                context = this as Context,
+                                onThemeChanged = { isDarkMode ->
+                                    AppCompatDelegate.setDefaultNightMode(
+                                        if (isDarkMode) 
+                                            AppCompatDelegate.MODE_NIGHT_YES 
+                                        else 
+                                            AppCompatDelegate.MODE_NIGHT_NO
+                                    )
                                 }
                             )
                         }

@@ -26,9 +26,18 @@ class AuthPrefHelper(context: Context) {
         sharedPreferences.edit().clear().apply()
     }
 
+    fun saveDarkMode(isDarkMode: Boolean) {
+        sharedPreferences.edit().putBoolean(KEY_DARK_MODE, isDarkMode).apply()
+    }
+
+    fun isDarkMode(): Boolean {
+        return sharedPreferences.getBoolean(KEY_DARK_MODE, true)
+    }
+
     companion object {
         private const val PREFS_NAME = "auth_prefs"
         private const val KEY_IS_LOGGED_IN = "is_logged_in"
         private const val KEY_USER_EMAIL = "user_email"
+        private const val KEY_DARK_MODE = "dark_mode"
     }
 } 
