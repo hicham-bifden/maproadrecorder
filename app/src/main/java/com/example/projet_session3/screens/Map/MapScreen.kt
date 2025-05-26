@@ -7,16 +7,22 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.*
 import android.Manifest
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.projet_session3.ViewModel.TripViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
+
+import com.google.maps.android.compose.rememberCameraPositionState
+
 
 // Position par défaut (Montréal)
 private val defaultLocation = LatLng(45.551164, -73.639164)
@@ -32,6 +38,11 @@ fun MapScreen() {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
+    // Déclaration de cameraPositionState
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(defaultLocation, 15f)
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         if (!locationPermissionState.status.isGranted) {
             Button(
@@ -44,10 +55,24 @@ fun MapScreen() {
             // Carte Google Maps
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
-                cameraPositionState = rememberCameraPositionState {
-                    position = CameraPosition.fromLatLngZoom(defaultLocation, 15f)
-                }
+                cameraPositionState = cameraPositionState
             )
+
+            // Bouton pour centrer la carte
+            IconButton(
+                onClick = {
+                    cameraPositionState.position = CameraPosition.fromLatLngZoom(defaultLocation, 15f)
+                },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.MyLocation,
+                    contentDescription = "Centrer la carte",
+                    tint = Color.Black // ou autre couleur selon ton thème
+                )
+            }
 
             // Bouton Start/Stop
             Button(
