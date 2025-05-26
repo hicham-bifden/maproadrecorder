@@ -11,6 +11,7 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.projet_session3.helper.AuthPrefHelper
 import com.example.projet_session3.helper.PrefHelper
 import com.example.projet_session3.model.Trip
 import com.example.projet_session3.screens.Auth.LoginScreen
@@ -32,6 +33,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val prefHelper = PrefHelper(this)
+            val authPrefHelper = AuthPrefHelper(this)
             prefHelper.isDarkModeEnabled()
 
             MapRoadRecorderTheme {
@@ -53,13 +55,18 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(
                         navController = navController,
-                        startDestination = "login"
+                        startDestination = if (authPrefHelper.isUserLoggedIn()) "main" else "login"
                     ) {
                         composable("login") {
                             LoginScreen(
                                 onRegisterClick = { navController.navigate("register") },
                                 onForgotPasswordClick = { navController.navigate("motDePasseOublie") },
-                                onLoginSuccess = { navController.navigate("main") }
+                                onLoginSuccess = { 
+                                    authPrefHelper.saveUserLoggedIn(true)
+                                    navController.navigate("main") {
+                                        popUpTo("login") { inclusive = true }
+                                    }
+                                }
                             )
                         }
                         composable("register") {
@@ -74,7 +81,14 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("main") {
-                            MainScreen()
+                            MainScreen(
+                                onLogout = {
+                                    authPrefHelper.clearUserData()
+                                    navController.navigate("login") {
+                                        popUpTo("main") { inclusive = true }
+                                    }
+                                }
+                            )
                         }
                         composable("tripDetail/{tripId}") { backStackEntry ->
                             val tripId = backStackEntry.arguments?.getString("tripId")

@@ -18,12 +18,24 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    onLogout: () -> Unit
+) {
     val navController = rememberNavController()
     val bottomNavController = rememberNavController()
     val viewModel: TripViewModel = viewModel()
 
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("MapRoadRecorder") },
+                actions = {
+                    IconButton(onClick = onLogout) {
+                        Icon(Icons.Default.ExitToApp, contentDescription = "Déconnexion")
+                    }
+                }
+            )
+        },
         bottomBar = {
             NavigationBar {
                 val currentRoute = bottomNavController.currentBackStackEntryAsState().value?.destination?.route
