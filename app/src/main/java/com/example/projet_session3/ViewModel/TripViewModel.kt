@@ -11,6 +11,8 @@ import java.util.*
 
 data class Trip(
     val id: String = "",
+    val title: String = "",
+    val description: String = "",
     val date: String = "",
     val heureDebut: String = "",
     val heureFin: String = "",
@@ -44,11 +46,13 @@ class TripViewModel : ViewModel() {
         _currentTrip.value = trip
     }
 
-    fun stopRecording(endPosition: LatLng) {
+    fun stopRecording(endPosition: LatLng, title: String, description: String) {
         _isRecording.value = false
         val currentTrip = _currentTrip.value ?: return
-
+        
         val updatedTrip = currentTrip.copy(
+            title = title,
+            description = description,
             heureFin = Date().toString(),
             positions = currentTrip.positions + Position(endPosition.latitude, endPosition.longitude, "fin")
         )

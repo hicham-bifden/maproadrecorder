@@ -27,6 +27,10 @@ fun MapScreen() {
     val viewModel: TripViewModel = viewModel()
     val isRecording by viewModel.isRecording.collectAsState()
     val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
+    
+    var showDialog by remember { mutableStateOf(false) }
+    var title by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
 
     Box(modifier = Modifier.fillMaxSize()) {
         if (!locationPermissionState.status.isGranted) {
@@ -49,7 +53,7 @@ fun MapScreen() {
             Button(
                 onClick = {
                     if (isRecording) {
-                        viewModel.stopRecording(defaultLocation)
+                        showDialog = true
                     } else {
                         viewModel.startRecording(defaultLocation)
                     }
@@ -61,5 +65,49 @@ fun MapScreen() {
                 Text(if (isRecording) "Arrêter" else "Commencer")
             }
         }
+    }
+
+    // Dialog pour saisir le titre et la description
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Enregistrer le voyage") },
+            text = {
+                Column {
+                    OutlinedTextField(
+                        value = title,
+                        onValueChange = { title = it },
+                        label = { Text("Titre") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = description,
+                        onValueChange = { description = it },
+                        label = { Text("Description") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (title.isNotBlank()) {
+                            viewModel.stopRecording(defaultLocation, title, description)
+                            showDialog = false
+                            title = ""
+                            description = ""
+                        }
+                    }
+                ) {
+                    Text("Enregistrer")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDialog = false }) {
+                    Text("Annuler")
+                }
+            }
+        )
     }
 }
