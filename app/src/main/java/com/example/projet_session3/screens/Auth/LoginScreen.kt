@@ -29,11 +29,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.projet_session3.R
 import com.example.projet_session3.model.AuthState
 import com.example.projet_session3.model.AuthViewModel
 
@@ -62,14 +64,17 @@ fun LoginScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        Text("Connexion", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = stringResource(R.string.login_title),
+            style = MaterialTheme.typography.headlineMedium
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email") },
+            label = { Text(stringResource(R.string.email)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.fillMaxWidth()
@@ -80,7 +85,7 @@ fun LoginScreen(
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Mot de passe") },
+            label = { Text(stringResource(R.string.password)) },
             singleLine = true,
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
@@ -104,7 +109,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         TextButton(onClick = onForgotPasswordClick) {
-            Text("Mot de passe oublié ?")
+            Text(stringResource(R.string.forgot_password))
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -117,7 +122,7 @@ fun LoginScreen(
             if (authState is AuthState.Loading) {
                 CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
             } else {
-                Text("Se connecter")
+                Text(stringResource(R.string.login_button))
             }
         }
 
@@ -127,9 +132,9 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            Text("Pas encore inscrit ? ")
+            Text(stringResource(R.string.not_registered))
             TextButton(onClick = onRegisterClick) {
-                Text("S'inscrire")
+                Text(stringResource(R.string.register))
             }
         }
     }

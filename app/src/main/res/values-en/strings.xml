@@ -30,11 +30,15 @@
     <string name="back_to_login">Back to Login</string>
     
     <!-- Trips Screen -->
+
+
     <string name="my_trips">My Trips</string>
     <string name="start_button">Start</string>
+    <string name="stop_button">Stop</string>
     <string name="no_trips">No trips recorded</string>
     
     <!-- Trip Detail Screen -->
+    <string name="ask_permission">Request location permission</string>
     <string name="trip_details">Trip Details</string>
     <string name="edit_trip">Edit Trip</string>
     <string name="back">Back</string>

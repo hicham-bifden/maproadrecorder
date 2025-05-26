@@ -9,16 +9,17 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.projet_session3.R
 import com.example.projet_session3.model.AuthState
 import com.example.projet_session3.model.AuthViewModel
 
 @Composable
-
 fun RegisterScreen(
     onLoginClick: () -> Unit,
     onRegisterSuccess: () -> Unit,
@@ -44,14 +45,17 @@ fun RegisterScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        Text("Inscription", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = stringResource(R.string.register_title),
+            style = MaterialTheme.typography.headlineMedium
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email") },
+            label = { Text(stringResource(R.string.email)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.fillMaxWidth()
@@ -62,7 +66,7 @@ fun RegisterScreen(
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Mot de passe") },
+            label = { Text(stringResource(R.string.password)) },
             singleLine = true,
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
@@ -80,7 +84,7 @@ fun RegisterScreen(
         OutlinedTextField(
             value = confirmPassword,
             onValueChange = { confirmPassword = it },
-            label = { Text("Confirmer le mot de passe") },
+            label = { Text(stringResource(R.string.confirm_password)) },
             singleLine = true,
             visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
@@ -115,7 +119,7 @@ fun RegisterScreen(
             if (authState is AuthState.Loading) {
                 CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
             } else {
-                Text("S'inscrire")
+                Text(stringResource(R.string.register_button))
             }
         }
 
@@ -125,9 +129,9 @@ fun RegisterScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            Text("Déjà inscrit ? ")
+            Text(stringResource(R.string.already_registered))
             TextButton(onClick = onLoginClick) {
-                Text("Se connecter")
+                Text(stringResource(R.string.login))
             }
         }
     }

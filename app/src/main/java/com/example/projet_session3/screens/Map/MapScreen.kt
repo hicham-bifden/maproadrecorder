@@ -14,8 +14,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.projet_session3.R
 import com.example.projet_session3.ViewModel.TripViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -49,7 +51,8 @@ fun MapScreen() {
                 onClick = { locationPermissionState.launchPermissionRequest() },
                 modifier = Modifier.align(Alignment.Center)
             ) {
-                Text("Demander la permission de localisation")
+                Text(stringResource((R.string.ask_permission)))
+
             }
         } else {
             // Carte Google Maps
@@ -87,7 +90,7 @@ fun MapScreen() {
                     .align(Alignment.BottomCenter)
                     .padding(16.dp)
             ) {
-                Text(if (isRecording) "Arrêter" else "Commencer")
+                Text(if (isRecording) stringResource(R.string.stop_button) else stringResource(R.string.start_button))
             }
         }
     }
