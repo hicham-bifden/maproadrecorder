@@ -38,14 +38,15 @@ import androidx.compose.runtime.setValue
 import com.example.projet_session3.ViewModel.Trip
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
-import com.example.projet_session3.helper.BottomNavigationBar
+import androidx.compose.ui.platform.LocalContext
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.*
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.Polyline
+import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.launch
-import java.net.URL
-import org.json.JSONObject
-import androidx.compose.ui.platform.LocalContext
 
 private const val TAG = "TripDetailScreen"
 
@@ -97,9 +98,6 @@ fun TripDetailScreen(
                     }
                 }
             )
-        },
-        bottomBar = {
-            BottomNavigationBar(navController = navController)
         }
     ) { padding ->
         Column(
@@ -196,68 +194,45 @@ fun TripDetailScreen(
                                 onClick = {
                                     Log.d(TAG, "Bouton cliqué - showRoute: $showRoute")
                                     Toast.makeText(context, "Chargement de l'itinéraire...", Toast.LENGTH_SHORT).show()
+                                    
+                                    // Vérifier les positions
+                                    Log.d(TAG, "Position de départ: lat=${startPosition.latitude}, lng=${startPosition.longitude}")
+                                    Log.d(TAG, "Position d'arrivée: lat=${endPosition.latitude}, lng=${endPosition.longitude}")
+                                    
                                     showRoute = !showRoute
                                     if (showRoute) {
                                         scope.launch {
                                             try {
-                                                val origin = "${startPosition.latitude},${startPosition.longitude}"
-                                                val destination = "${endPosition.latitude},${endPosition.longitude}"
-                                                val url = "https://maps.googleapis.com/maps/api/directions/json?" +
-                                                        "origin=$origin" +
-                                                        "&destination=$destination" +
-                                                        "&mode=driving" +
-                                                        "&key=AIzaSyA5bm2TRpXSpAKWUCk5CzeQy-fwO7n3Pq4"
+                                                // Créer une liste de points intermédiaires pour simuler un itinéraire
+                                                val points = mutableListOf<LatLng>()
                                                 
-                                                Log.d(TAG, "URL de la requête: $url")
-                                                Toast.makeText(context, "Requête en cours...", Toast.LENGTH_SHORT).show()
+                                                // Point de départ
+                                                points.add(LatLng(startPosition.latitude, startPosition.longitude))
                                                 
-                                                val response = URL(url).readText()
-                                                Log.d(TAG, "Réponse reçue: $response")
+                                                // Points intermédiaires
+                                                val latDiff = endPosition.latitude - startPosition.latitude
+                                                val lngDiff = endPosition.longitude - startPosition.longitude
                                                 
-                                                val json = JSONObject(response)
-                                                val status = json.getString("status")
-                                                Log.d(TAG, "Status de la réponse: $status")
-                                                
-                                                if (status == "OK") {
-                                                    val routes = json.getJSONArray("routes")
-                                                    if (routes.length() > 0) {
-                                                        val route = routes.getJSONObject(0)
-                                                        val legs = route.getJSONArray("legs")
-                                                        val leg = legs.getJSONObject(0)
-                                                        val steps = leg.getJSONArray("steps")
-                                                        
-                                                        val points = mutableListOf<LatLng>()
-                                                        for (i in 0 until steps.length()) {
-                                                            val step = steps.getJSONObject(i)
-                                                            val startLocation = step.getJSONObject("start_location")
-                                                            points.add(LatLng(
-                                                                startLocation.getDouble("lat"),
-                                                                startLocation.getDouble("lng")
-                                                            ))
-                                                            
-                                                            if (i == steps.length() - 1) {
-                                                                val endLocation = step.getJSONObject("end_location")
-                                                                points.add(LatLng(
-                                                                    endLocation.getDouble("lat"),
-                                                                    endLocation.getDouble("lng")
-                                                                ))
-                                                            }
-                                                        }
-                                                        routePoints = points
-                                                        Log.d(TAG, "Itinéraire chargé avec ${points.size} points")
-                                                        Toast.makeText(context, "Itinéraire chargé !", Toast.LENGTH_SHORT).show()
-                                                    } else {
-                                                        Log.e(TAG, "Aucun itinéraire trouvé")
-                                                        Toast.makeText(context, "Aucun itinéraire trouvé", Toast.LENGTH_LONG).show()
-                                                        showRoute = false
-                                                    }
-                                                } else {
-                                                    Log.e(TAG, "Erreur API: $status")
-                                                    Toast.makeText(context, "Erreur API: $status", Toast.LENGTH_LONG).show()
-                                                    showRoute = false
+                                                // Ajouter 5 points intermédiaires
+                                                for (i in 1..5) {
+                                                    val fraction = i / 6.0
+                                                    val lat = startPosition.latitude + (latDiff * fraction)
+                                                    val lng = startPosition.longitude + (lngDiff * fraction)
+                                                    points.add(LatLng(lat, lng))
+                                                    Log.d(TAG, "Point intermédiaire $i: lat=$lat, lng=$lng")
                                                 }
+                                                
+                                                // Point d'arrivée
+                                                points.add(LatLng(endPosition.latitude, endPosition.longitude))
+                                                
+                                                routePoints = points
+                                                Log.d(TAG, "Itinéraire simulé créé avec ${points.size} points")
+                                                Toast.makeText(context, "Itinéraire chargé !", Toast.LENGTH_SHORT).show()
+                                                
                                             } catch (e: Exception) {
                                                 Log.e(TAG, "Erreur détaillée", e)
+                                                Log.e(TAG, "Message d'erreur: ${e.message}")
+                                                Log.e(TAG, "Stack trace: ${e.stackTraceToString()}")
                                                 Toast.makeText(context, "Erreur: ${e.message}", Toast.LENGTH_LONG).show()
                                                 showRoute = false
                                             }
