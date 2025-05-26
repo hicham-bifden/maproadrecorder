@@ -8,44 +8,39 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import com.example.projet_session3.model.Trip
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.projet_session3.ViewModel.TripViewModel
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
-
-
-////
-
+import com.example.projet_session3.ViewModel.Trip
 
 @Composable
 fun TripsScreen(
     navController: NavController,
-    tripsList: List<Trip>
+    viewModel: TripViewModel = viewModel()
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
     var tripToDelete by remember { mutableStateOf<Trip?>(null) }
+    val trips by viewModel.trips.collectAsState()
 
     Column(
         modifier = Modifier
@@ -58,52 +53,67 @@ fun TripsScreen(
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        tripsList.forEach { trip ->
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                elevation = CardDefaults.cardElevation(6.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F9F9))
+        if (trips.isEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = trip.title, style = MaterialTheme.typography.titleLarge)
-                    Text(
-                        text = trip.description,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "📅 ${trip.date}",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color.DarkGray
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Row(
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.fillMaxWidth()
+                Text(
+                    text = "Aucun voyage enregistré",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.Gray
+                )
+            }
+        } else {
+            LazyColumn {
+                items(trips) { trip ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        elevation = CardDefaults.cardElevation(6.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F9F9))
                     ) {
-                        IconButton(onClick = {
-                            navController.navigate("tripDetail/${trip.id}")
-                        }) {
-                            Icon(Icons.Default.Info, contentDescription = "Détails", tint = Color(0xFF2196F3))
-                        }
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(text = trip.title, style = MaterialTheme.typography.titleLarge)
+                            Text(
+                                text = trip.description,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.Gray
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = "📅 ${trip.date}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = Color.DarkGray
+                            )
 
-                        IconButton(onClick = {
-                            navController.navigate("tripDetail/${trip.id}") // Optionnel
-                        }) {
-                            Icon(Icons.Default.Edit, contentDescription = "Modifier", tint = Color(0xFFFF9800))
-                        }
+                            Spacer(modifier = Modifier.height(12.dp))
 
-                        IconButton(onClick = {
-                            tripToDelete = trip
-                            showDeleteDialog = true
-                        }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Supprimer", tint = Color(0xFFF44336))
+                            Row(
+                                horizontalArrangement = Arrangement.End,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                IconButton(onClick = {
+                                    navController.navigate("tripDetail/${trip.id}")
+                                }) {
+                                    Icon(Icons.Default.Info, contentDescription = "Détails", tint = Color(0xFF2196F3))
+                                }
+
+                                IconButton(onClick = {
+                                    navController.navigate("tripDetail/${trip.id}")
+                                }) {
+                                    Icon(Icons.Default.Edit, contentDescription = "Modifier", tint = Color(0xFFFF9800))
+                                }
+
+                                IconButton(onClick = {
+                                    tripToDelete = trip
+                                    showDeleteDialog = true
+                                }) {
+                                    Icon(Icons.Default.Delete, contentDescription = "Supprimer", tint = Color(0xFFF44336))
+                                }
+                            }
                         }
                     }
                 }
@@ -119,7 +129,7 @@ fun TripsScreen(
             text = { Text("Es-tu sûr de vouloir supprimer \"${tripToDelete?.title}\" ?") },
             confirmButton = {
                 TextButton(onClick = {
-                    // TODO: Supprimer le voyage
+                    tripToDelete?.id?.let { viewModel.deleteTrip(it) }
                     showDeleteDialog = false
                 }) {
                     Text("Oui", color = Color.Red)

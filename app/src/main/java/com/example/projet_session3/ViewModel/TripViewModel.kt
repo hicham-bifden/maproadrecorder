@@ -20,10 +20,12 @@ data class Trip(
 )
 
 data class Position(
-    val latitude: Double,
-    val longitude: Double,
-    val type: String // "début" ou "fin"
-)
+    val latitude: Double = 0.0,
+    val longitude: Double = 0.0,
+    val type: String = "" // "début" ou "fin"
+) {
+
+}
 
 class TripViewModel : ViewModel() {
     private val db = FirebaseFirestore.getInstance()
@@ -34,6 +36,30 @@ class TripViewModel : ViewModel() {
 
     private val _currentTrip = MutableStateFlow<Trip?>(null)
     val currentTrip: StateFlow<Trip?> = _currentTrip
+
+    private val _trips = MutableStateFlow<List<Trip>>(emptyList())
+    val trips: StateFlow<List<Trip>> = _trips
+
+    init {
+        loadTrips()
+    }
+
+    private fun loadTrips() {
+        tripsCollection
+            .orderBy("date", com.google.firebase.firestore.Query.Direction.DESCENDING)
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.e("Firestore", "Erreur lors de l'écoute des voyages", e)
+                    return@addSnapshotListener
+                }
+
+                val tripsList = snapshot?.documents?.mapNotNull { doc ->
+                    doc.toObject(Trip::class.java)?.copy(id = doc.id)
+                } ?: emptyList()
+
+                _trips.value = tripsList
+            }
+    }
 
     fun startRecording(startPosition: LatLng) {
         _isRecording.value = true
@@ -68,5 +94,16 @@ class TripViewModel : ViewModel() {
             }
 
         _currentTrip.value = null
+    }
+
+    fun deleteTrip(tripId: String) {
+        tripsCollection.document(tripId)
+            .delete()
+            .addOnSuccessListener {
+                Log.d("Firestore", "Voyage supprimé avec succès")
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Erreur lors de la suppression", e)
+            }
     }
 }

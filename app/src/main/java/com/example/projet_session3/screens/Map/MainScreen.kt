@@ -1,50 +1,36 @@
 package com.example.projet_session3.screens.Map
 
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Map
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.projet_session3.model.Trip
+import com.example.projet_session3.ViewModel.TripViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.currentBackStackEntryAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(
-    navController: NavController,
-    tripsList: List<Trip>
-) {
+fun MainScreen() {
+    val navController = rememberNavController()
     val bottomNavController = rememberNavController()
-    val currentRoute = bottomNavController.currentBackStackEntryAsState().value?.destination?.route
+    val viewModel: TripViewModel = viewModel()
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("MapRoadRecorder") },
-                actions = {
-                    IconButton(onClick = {
-                        // Déconnexion → retourne à l'écran de login
-                        navController.navigate("login") {
-                            popUpTo("main") { inclusive = true }
-                        }
-                    }) {
-                        Icon(Icons.Default.ExitToApp, contentDescription = "Déconnexion")
-                    }
-                }
-            )
-        },
         bottomBar = {
             NavigationBar {
+                val currentRoute = bottomNavController.currentBackStackEntryAsState().value?.destination?.route
+
                 NavigationBarItem(
+                    icon = { Icon(Icons.Default.Map, contentDescription = "Carte") },
+                    label = { Text("Carte") },
                     selected = currentRoute == "map",
                     onClick = {
                         if (currentRoute != "map") {
@@ -53,11 +39,12 @@ fun MainScreen(
                                 launchSingleTop = true
                             }
                         }
-                    },
-                    icon = { Icon(Icons.Default.Map, contentDescription = "Carte") },
-                    label = { Text("Carte") }
+                    }
                 )
+
                 NavigationBarItem(
+                    icon = { Icon(Icons.Default.List, contentDescription = "Voyages") },
+                    label = { Text("Voyages") },
                     selected = currentRoute == "trips",
                     onClick = {
                         if (currentRoute != "trips") {
@@ -66,11 +53,12 @@ fun MainScreen(
                                 launchSingleTop = true
                             }
                         }
-                    },
-                    icon = { Icon(Icons.Default.List, contentDescription = "Voyages") },
-                    label = { Text("Voyages") }
+                    }
                 )
+
                 NavigationBarItem(
+                    icon = { Icon(Icons.Default.Settings, contentDescription = "Paramètres") },
+                    label = { Text("Paramètres") },
                     selected = currentRoute == "settings",
                     onClick = {
                         if (currentRoute != "settings") {
@@ -79,29 +67,27 @@ fun MainScreen(
                                 launchSingleTop = true
                             }
                         }
-                    },
-                    icon = { Icon(Icons.Default.Settings, contentDescription = "Paramètres") },
-                    label = { Text("Paramètres") }
+                    }
                 )
             }
         }
-    ) { innerPadding ->
+    ) { paddingValues ->
         NavHost(
             navController = bottomNavController,
             startDestination = "map",
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(paddingValues)
         ) {
             composable("map") {
                 MapScreen()
             }
             composable("trips") {
-                TripsScreen(
-                    navController = navController,
-                    tripsList = tripsList
-                )
+                TripsScreen(navController = navController, viewModel = viewModel)
             }
             composable("settings") {
-                SettingsScreen()
+                // TODO: Implémenter l'écran des paramètres
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Text("Paramètres")
+                }
             }
         }
     }

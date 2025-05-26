@@ -20,10 +20,10 @@ import com.example.projet_session3.screens.Map.MainScreen
 import com.example.projet_session3.screens.Map.TripDetailScreen
 import com.example.projet_session3.screens.Map.TripsScreen
 import com.example.projet_session3.ui.theme.MapRoadRecorderTheme
-
-
-
-
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,62 +35,66 @@ class MainActivity : ComponentActivity() {
             prefHelper.isDarkModeEnabled()
 
             MapRoadRecorderTheme {
-                val navController = rememberNavController()
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    val navController = rememberNavController()
 
-                // Liste simulée de voyages (à remplacer par un ViewModel plus tard)
-                val tripsList = remember {
-                    mutableStateOf(
-                        listOf(
-                            Trip(id = "1", title = "Voyage à Paris", description = "Un beau voyage", date = "2025-06-01"),
-                            Trip(id = "2", title = "Safari au Kenya", description = "Aventure dans la savane", date = "2025-07-15")
-                        )
-                    )
-                }
-
-                NavHost(navController = navController, startDestination = "main") {
-
-                    composable("login") {
-                        LoginScreen(
-                            onRegisterClick = { navController.navigate("register") },
-                            onForgotPasswordClick = { navController.navigate("motdepasseoublie") },
-                            onLoginSuccess = { navController.navigate("main") }
-                        )
-                    }
-
-                    composable("register") {
-                        RegisterScreen(
-                            onRegisterSuccess = { navController.navigate("login") },
-                            onLoginClick = { navController.navigate("login") }
-                        )
-                    }
-
-                    composable("main") {
-                        // Page principale avec navigation bas et top bar
-                        MainScreen(
-                            navController = navController,
-                            tripsList = tripsList.value
-                        )
-                    }
-
-                    composable("tripDetail/{tripId}") { backStackEntry ->
-                        val tripId = backStackEntry.arguments?.getString("tripId")
-                        val selectedTrip = tripsList.value.find { it.id == tripId }
-
-                        selectedTrip?.let {
-                            TripDetailScreen(
-                                navController = navController,
-                                trip = it,
-                                onSave = {
-                                    navController.popBackStack()
-                                }
+                    // Liste simulée de voyages (à remplacer par un ViewModel plus tard)
+                    val tripsList = remember {
+                        mutableStateOf(
+                            listOf(
+                                Trip(id = "1", title = "Voyage à Paris", description = "Un beau voyage", date = "2025-06-01"),
+                                Trip(id = "2", title = "Safari au Kenya", description = "Aventure dans la savane", date = "2025-07-15")
                             )
-                        } ?: Text("Voyage introuvable")
+                        )
                     }
 
-                    composable("motdepasseoublie") {
-                        MotDePasseOublieScreen(
-                            onBackToLogin = { navController.navigate("login") }
-                        )
+                    NavHost(
+                        navController = navController,
+                        startDestination = "login"
+                    ) {
+                        composable("login") {
+                            LoginScreen(
+                                onRegisterClick = { navController.navigate("register") },
+                                onForgotPasswordClick = { navController.navigate("motDePasseOublie") },
+                                onLoginSuccess = { navController.navigate("main") }
+                            )
+                        }
+                        composable("register") {
+                            RegisterScreen(
+                                onLoginClick = { navController.navigate("login") },
+                                onRegisterSuccess = { navController.navigate("login") }
+                            )
+                        }
+                        composable("motDePasseOublie") {
+                            MotDePasseOublieScreen(
+                                onBackToLogin = { navController.navigate("login") }
+                            )
+                        }
+                        composable("main") {
+                            MainScreen()
+                        }
+                        composable("tripDetail/{tripId}") { backStackEntry ->
+                            val tripId = backStackEntry.arguments?.getString("tripId")
+                            val selectedTrip = tripsList.value.find { it.id == tripId }
+
+                            selectedTrip?.let {
+                                TripDetailScreen(
+                                    navController = navController,
+                                    trip = it,
+                                    onSave = { updatedTrip ->
+                                        // Mettre à jour la liste des voyages
+                                        val updatedList = tripsList.value.map { trip ->
+                                            if (trip.id == updatedTrip.id) updatedTrip else trip
+                                        }
+                                        tripsList.value = updatedList
+                                        navController.popBackStack()
+                                    }
+                                )
+                            } ?: Text("Voyage introuvable")
+                        }
                     }
                 }
             }
