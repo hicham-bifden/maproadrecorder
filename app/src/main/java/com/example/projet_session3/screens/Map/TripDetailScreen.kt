@@ -33,6 +33,9 @@ import com.example.projet_session3.ViewModel.Trip
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import com.example.projet_session3.helper.BottomNavigationBar
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.*
 
 ////
 
@@ -46,6 +49,20 @@ fun TripDetailScreen(
     var isEditing by remember { mutableStateOf(false) }
     var title by remember { mutableStateOf(trip.title) }
     var description by remember { mutableStateOf(trip.description) }
+
+    // Récupérer les points de départ et d'arrivée
+    val startPosition = trip.positions.firstOrNull()
+    val endPosition = trip.positions.lastOrNull()
+
+    // Calculer le centre de la carte
+    val center = if (startPosition != null && endPosition != null) {
+        LatLng(
+            (startPosition.latitude + endPosition.latitude) / 2,
+            (startPosition.longitude + endPosition.longitude) / 2
+        )
+    } else {
+        LatLng(45.551164, -73.639164) // Position par défaut (Montréal)
+    }
 
     Scaffold(
         topBar = {
@@ -111,6 +128,49 @@ fun TripDetailScreen(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Carte avec les points
+                if (startPosition != null && endPosition != null) {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp),
+                        elevation = CardDefaults.cardElevation(4.dp)
+                    ) {
+                        GoogleMap(
+                            modifier = Modifier.fillMaxSize(),
+                            cameraPositionState = rememberCameraPositionState {
+                                position = CameraPosition.fromLatLngZoom(center, 12f)
+                            }
+                        ) {
+                            // Marqueur de départ
+                            Marker(
+                                state = MarkerState(
+                                    position = LatLng(startPosition.latitude, startPosition.longitude)
+                                ),
+                                title = "Départ"
+                            )
+
+                            // Marqueur d'arrivée
+                            Marker(
+                                state = MarkerState(
+                                    position = LatLng(endPosition.latitude, endPosition.longitude)
+                                ),
+                                title = "Arrivée"
+                            )
+
+                            // Ligne droite entre les points
+                            Polyline(
+                                points = listOf(
+                                    LatLng(startPosition.latitude, startPosition.longitude),
+                                    LatLng(endPosition.latitude, endPosition.longitude)
+                                ),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+                }
             }
         }
     }
