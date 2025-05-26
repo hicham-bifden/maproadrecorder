@@ -45,7 +45,7 @@ fun MapScreen() {
                 }
             )
 
-            // Bouton d'enregistrement
+            // Bouton Start/Stop
             Button(
                 onClick = {
                     if (isRecording) {

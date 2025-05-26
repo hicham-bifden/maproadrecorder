@@ -1,8 +1,10 @@
 package com.example.projet_session3.ViewModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.util.*
@@ -22,8 +24,8 @@ data class Position(
 )
 
 class TripViewModel : ViewModel() {
-    private val database = FirebaseDatabase.getInstance()
-    private val tripsRef = database.getReference("trips_v1")
+    private val db = FirebaseFirestore.getInstance()
+    private val tripsCollection = db.collection("trips_v3") // Firestore
 
     private val _isRecording = MutableStateFlow(false)
     val isRecording: StateFlow<Boolean> = _isRecording
@@ -45,14 +47,22 @@ class TripViewModel : ViewModel() {
     fun stopRecording(endPosition: LatLng) {
         _isRecording.value = false
         val currentTrip = _currentTrip.value ?: return
-        
+
         val updatedTrip = currentTrip.copy(
             heureFin = Date().toString(),
             positions = currentTrip.positions + Position(endPosition.latitude, endPosition.longitude, "fin")
         )
 
-        // Sauvegarder dans Firebase
-        tripsRef.child(updatedTrip.id).setValue(updatedTrip)
+        // ⚡ Sauvegarde dans Firestore (collection "trips_v3")
+        tripsCollection.document(updatedTrip.id)
+            .set(updatedTrip)
+            .addOnSuccessListener {
+                Log.d("Firestore", "Document ajouté avec ID: ${updatedTrip.id}")
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Erreur d'écriture", e)
+            }
+
         _currentTrip.value = null
     }
 }
