@@ -109,9 +109,10 @@ class MainActivity : ComponentActivity() {
                         composable("settings") {
                             SettingsScreen(
                                 context = this as Context,
-                                onThemeChanged = { isDarkMode ->
+                                onThemeChanged = { newDarkMode ->
+                                    isDarkMode = newDarkMode
                                     AppCompatDelegate.setDefaultNightMode(
-                                        if (isDarkMode) 
+                                        if (newDarkMode) 
                                             AppCompatDelegate.MODE_NIGHT_YES 
                                         else 
                                             AppCompatDelegate.MODE_NIGHT_NO
