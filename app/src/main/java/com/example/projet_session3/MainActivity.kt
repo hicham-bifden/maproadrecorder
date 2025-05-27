@@ -7,10 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -40,7 +37,6 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         
         val authPrefHelper = AuthPrefHelper(this)
-        // Appliquer le mode sombre initial
         AppCompatDelegate.setDefaultNightMode(
             if (authPrefHelper.isDarkMode()) 
                 AppCompatDelegate.MODE_NIGHT_YES 
@@ -103,12 +99,23 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate("login") {
                                         popUpTo("main") { inclusive = true }
                                     }
+                                },
+                                isDarkMode = isDarkMode,
+                                onThemeChanged = { newDarkMode ->
+                                    isDarkMode = newDarkMode
+                                    AppCompatDelegate.setDefaultNightMode(
+                                        if (newDarkMode) 
+                                            AppCompatDelegate.MODE_NIGHT_YES 
+                                        else 
+                                            AppCompatDelegate.MODE_NIGHT_NO
+                                    )
                                 }
                             )
                         }
                         composable("settings") {
                             SettingsScreen(
                                 context = this as Context,
+                                isDarkMode = isDarkMode,
                                 onThemeChanged = { newDarkMode ->
                                     isDarkMode = newDarkMode
                                     AppCompatDelegate.setDefaultNightMode(

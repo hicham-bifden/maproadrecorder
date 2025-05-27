@@ -99,20 +99,22 @@ fun MapScreen() {
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text("Enregistrer le voyage") },
-            text = {
+
+            title = { Text(text = stringResource(id = R.string.save_trip)) },
+
+                    text = {
                 Column {
                     OutlinedTextField(
                         value = title,
                         onValueChange = { title = it },
-                        label = { Text("Titre") },
+                        label = { Text(stringResource(R.string.title)) },
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = description,
                         onValueChange = { description = it },
-                        label = { Text("Description") },
+                        label = { Text(stringResource(R.string.description)) },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -128,12 +130,12 @@ fun MapScreen() {
                         }
                     }
                 ) {
-                    Text("Enregistrer")
+                    Text(stringResource(R.string.save))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDialog = false }) {
-                    Text("Annuler")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )

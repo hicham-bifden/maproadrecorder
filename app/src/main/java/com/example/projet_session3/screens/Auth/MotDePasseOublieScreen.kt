@@ -6,9 +6,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.projet_session3.R
 import com.example.projet_session3.model.AuthState
 import com.example.projet_session3.model.AuthViewModel
 
@@ -50,7 +52,7 @@ fun MotDePasseOublieScreen(
 
         if (authState is AuthState.Success) {
             Text(
-                text = "Un email de réinitialisation a été envoyé à votre adresse email.",
+                text = stringResource(R.string.reset_sent),
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(top = 8.dp)
             )
@@ -66,8 +68,8 @@ fun MotDePasseOublieScreen(
             if (authState is AuthState.Loading) {
                 CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
             } else {
-                Text("Envoyer le lien de réinitialisation")
-            }
+                Text(stringResource(R.string.send_reset_link))
+             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -76,7 +78,7 @@ fun MotDePasseOublieScreen(
             onClick = onBackToLogin,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
-            Text("Retour à la connexion")
+            Text(stringResource(R.string.back_to_login))
         }
     }
 }

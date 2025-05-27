@@ -28,7 +28,18 @@
     <string name="reset_password_success">A reset link has been sent to your email address.</string>
     <string name="send_reset_link">Send Reset Link</string>
     <string name="back_to_login">Back to Login</string>
-    
+
+
+    <!-- Pour le anglais  -->
+
+    <!-- Pour le list   -->
+
+
+    <string name="sort_recent">Most recent</string>
+    <string name="sort_oldest">Oldest</string>
+    <string name="search_placeholder">Search...</string>
+
+
     <!-- Trips Screen -->
 
 
@@ -56,4 +67,12 @@
     <string name="loading_route">Loading route...</string>
     <string name="route_loaded">Route loaded!</string>
     <string name="error">Error</string>
+
+    <string name="dark_mode">Dark mode</string>
+    <string name="settings">Settings</string>
+
+    <string name="reset_password">Password Reset</string>
+    <string name="reset_sent">A reset email has been sent to your email address.</string>
+
+
 </resources> 

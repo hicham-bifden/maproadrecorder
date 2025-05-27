@@ -14,14 +14,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.projet_session3.helper.AuthPrefHelper
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.ui.res.stringResource
+import com.example.projet_session3.R
 
 @Composable
 fun SettingsScreen(
     context: Context = LocalContext.current,
+    isDarkMode: Boolean,
     onThemeChanged: (Boolean) -> Unit
 ) {
     val authPrefHelper = remember { AuthPrefHelper(context) }
-    var isDarkMode by remember { mutableStateOf(authPrefHelper.isDarkMode()) }
 
     Column(
         modifier = Modifier
@@ -29,7 +31,7 @@ fun SettingsScreen(
             .padding(16.dp)
     ) {
         Text(
-            text = "Paramètres",
+            text = stringResource(R.string.settings),
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 16.dp)
         )
@@ -42,13 +44,12 @@ fun SettingsScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Mode sombre",
+                text = stringResource(R.string.dark_mode),
                 style = MaterialTheme.typography.bodyLarge
             )
             Switch(
                 checked = isDarkMode,
                 onCheckedChange = { newValue ->
-                    isDarkMode = newValue
                     authPrefHelper.saveDarkMode(newValue)
                     onThemeChanged(newValue)
                 }

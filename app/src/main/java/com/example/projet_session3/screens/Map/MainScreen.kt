@@ -23,7 +23,9 @@ import androidx.appcompat.app.AppCompatDelegate
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    isDarkMode: Boolean,
+    onThemeChanged: (Boolean) -> Unit
 ) {
     val navController = rememberNavController()
     val viewModel: TripViewModel = viewModel()
@@ -102,14 +104,8 @@ fun MainScreen(
             composable("settings") {
                 SettingsScreen(
                     context = context,
-                    onThemeChanged = { isDarkMode ->
-                        AppCompatDelegate.setDefaultNightMode(
-                            if (isDarkMode) 
-                                AppCompatDelegate.MODE_NIGHT_YES 
-                            else 
-                                AppCompatDelegate.MODE_NIGHT_NO
-                        )
-                    }
+                    isDarkMode = isDarkMode,
+                    onThemeChanged = onThemeChanged
                 )
             }
             composable("tripDetail/{tripId}") { backStackEntry ->

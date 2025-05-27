@@ -55,8 +55,10 @@ fun TripsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 8.dp),
-                placeholder = { Text("Rechercher...") },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Rechercher") },
+                placeholder = { Text(text = stringResource(id = R.string.search_placeholder)) },
+
+
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Rechercher") },
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp)
             )
@@ -77,7 +79,15 @@ fun TripsScreen(
                         contentDescription = "Trier"
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text(if (isAscending) "Plus récent" else "Plus ancien")
+                    Text(text = stringResource(id = if (isAscending) R.string.sort_recent else R.string.sort_oldest))
+
+
+
+
+
+
+
+
                 }
             }
 

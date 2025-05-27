@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">MapRoadRecorder</string>
 
+
+    <!-- Par defaut  -->
     <!-- Navigation Bottom -->
     <string name="nav_map">Carte</string>
     <string name="nav_trips">Voyages</string>
@@ -35,8 +37,23 @@
     <string name="start_button">Commencer</string>
     <string name="no_trips">Aucun voyage enregistré</string>
 
-    <!-- Écran de détail du voyage -->
+    <!-- Écran de list  -->
 
+
+    <string name="sort_recent">Plus récent</string>
+    <string name="sort_oldest">Plus ancien</string>
+    <string name="search_placeholder">Rechercher...</string>
+
+
+
+
+
+
+
+
+
+
+    <!-- Écran de détail du voyage -->
     <string name="ask_permission">Demander la permission de localisation</string>
     <string name="trip_details">Détails du voyage</string>
     <string name="edit_trip">Modifier le voyage</string>
@@ -55,4 +72,14 @@
     <string name="loading_route">Chargement de l\'itinéraire...</string>
     <string name="route_loaded">Itinéraire chargé !</string>
     <string name="error">Erreur</string>
+
+    <string name="dark_mode">Mode sombre</string>
+    <string name="settings">Paramètres</string>
+
+
+
+
+    <string name="reset_password">Réinitialisation du mot de passe</string>
+     <string name="reset_sent">Un email de réinitialisation a été envoyé à votre adresse email.</string>
+
 </resources>
