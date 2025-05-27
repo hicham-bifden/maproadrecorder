@@ -66,6 +66,7 @@ fun TripDetailScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var title by remember { mutableStateOf(trip.title) }
     var description by remember { mutableStateOf(trip.description) }
+    val context = LocalContext.current
     
     val startPosition = trip.positions.firstOrNull()
     val endPosition = trip.positions.lastOrNull()
@@ -203,14 +204,30 @@ fun TripDetailScreen(
                                 state = MarkerState(
                                     position = LatLng(startPosition.latitude, startPosition.longitude)
                                 ),
-                                title = "Départ"
+                                title = "Départ",
+                                onClick = {
+                                    Toast.makeText(
+                                        context,
+                                        "Point de départ\nLat: ${startPosition.latitude}\nLng: ${startPosition.longitude}\nDate: ${trip.date}",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    true
+                                }
                             )
 
                             Marker(
                                 state = MarkerState(
                                     position = LatLng(endPosition.latitude, endPosition.longitude)
                                 ),
-                                title = "Arrivée"
+                                title = "Arrivée",
+                                onClick = {
+                                    Toast.makeText(
+                                        context,
+                                        "Point d'arrivée\nLat: ${endPosition.latitude}\nLng: ${endPosition.longitude}\nDate: ${trip.date}",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    true
+                                }
                             )
 
                             Polyline(
