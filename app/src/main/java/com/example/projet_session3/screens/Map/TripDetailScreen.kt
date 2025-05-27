@@ -49,6 +49,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.launch
 import androidx.compose.ui.res.stringResource
 import com.example.projet_session3.R
+import kotlin.math.*
 
 private const val TAG = "TripDetailScreen"
 
@@ -77,26 +78,33 @@ fun TripDetailScreen(
             (startPosition.longitude + endPosition.longitude) / 2
         )
     } else {
-        LatLng(45.551164, -73.639164) // Montréal par défaut
+        LatLng(45.551164, -73.639164)
     }
 
+    // Calcul des points de l'itinéraire
     val routePoints = remember(startPosition, endPosition) {
         if (startPosition != null && endPosition != null) {
             val points = mutableListOf<LatLng>()
             
+            // Point de départ
             points.add(LatLng(startPosition.latitude, startPosition.longitude))
             
+            // Calcul de la distance
             val latDiff = endPosition.latitude - startPosition.latitude
             val lngDiff = endPosition.longitude - startPosition.longitude
             
-            for (i in 1..5) {
-                val fraction = i / 6.0
+            // Création de points intermédiaires
+            for (i in 1..10) {
+                val fraction = i / 11.0
                 val lat = startPosition.latitude + (latDiff * fraction)
                 val lng = startPosition.longitude + (lngDiff * fraction)
-                val deviation = 0.001 * Math.sin(i * Math.PI / 3)
+                
+                // Ajout d'une légère déviation
+                val deviation = 0.0002 * Math.sin(i * Math.PI / 3)
                 points.add(LatLng(lat + deviation, lng + deviation))
             }
             
+            // Point d'arrivée
             points.add(LatLng(endPosition.latitude, endPosition.longitude))
             points
         } else {
@@ -232,7 +240,8 @@ fun TripDetailScreen(
 
                             Polyline(
                                 points = routePoints,
-                                color = MaterialTheme.colorScheme.primary
+                                color = MaterialTheme.colorScheme.primary,
+                                width = 8f
                             )
                         }
                     }
