@@ -8,7 +8,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.util.*
-
 data class Trip(
     val id: String = "",
     val title: String = "",
@@ -23,13 +22,12 @@ data class Position(
     val latitude: Double = 0.0,
     val longitude: Double = 0.0,
     val type: String = "" // "début" ou "fin"
-) {
-
-}
+)
 
 class TripViewModel : ViewModel() {
+
     private val db = FirebaseFirestore.getInstance()
-    private val tripsCollection = db.collection("trips_v3") // Firestore
+    private val tripsCollection = db.collection("trips_v3")
 
     private val _isRecording = MutableStateFlow(false)
     val isRecording: StateFlow<Boolean> = _isRecording
@@ -37,11 +35,48 @@ class TripViewModel : ViewModel() {
     private val _currentTrip = MutableStateFlow<Trip?>(null)
     val currentTrip: StateFlow<Trip?> = _currentTrip
 
-    private val _trips = MutableStateFlow<List<Trip>>(emptyList())
+    private val _allTrips = MutableStateFlow<List<Trip>>(emptyList()) // Liste originale
+    private val _trips = MutableStateFlow<List<Trip>>(emptyList())     // Liste affichée
     val trips: StateFlow<List<Trip>> = _trips
+
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery
+
+    private val _isAscending = MutableStateFlow(true)
+    val isAscending: StateFlow<Boolean> = _isAscending
 
     init {
         loadTrips()
+    }
+
+    fun setSearchQuery(query: String) {
+        _searchQuery.value = query
+        filterAndSortTrips()
+    }
+
+    fun toggleSortOrder() {
+        _isAscending.value = !_isAscending.value
+        filterAndSortTrips()
+    }
+
+    private fun filterAndSortTrips() {
+        val query = _searchQuery.value.lowercase()
+        val allTrips = _allTrips.value
+
+        val filteredTrips = if (query.isEmpty()) {
+            allTrips
+        } else {
+            allTrips.filter { trip ->
+                trip.title.lowercase().contains(query) ||
+                        trip.description.lowercase().contains(query)
+            }
+        }
+
+        _trips.value = if (_isAscending.value) {
+            filteredTrips.sortedBy { it.date }
+        } else {
+            filteredTrips.sortedByDescending { it.date }
+        }
     }
 
     private fun loadTrips() {
@@ -57,7 +92,8 @@ class TripViewModel : ViewModel() {
                     doc.toObject(Trip::class.java)?.copy(id = doc.id)
                 } ?: emptyList()
 
-                _trips.value = tripsList
+                _allTrips.value = tripsList
+                filterAndSortTrips()
             }
     }
 
@@ -75,7 +111,7 @@ class TripViewModel : ViewModel() {
     fun stopRecording(endPosition: LatLng, title: String, description: String) {
         _isRecording.value = false
         val currentTrip = _currentTrip.value ?: return
-        
+
         val updatedTrip = currentTrip.copy(
             title = title,
             description = description,
