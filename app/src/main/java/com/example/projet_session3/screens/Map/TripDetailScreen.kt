@@ -59,9 +59,11 @@ private const val TAG = "TripDetailScreen"
 fun TripDetailScreen(
     navController: NavController,
     trip: Trip,
-    onSave: (Trip) -> Unit
+    onSave: (Trip) -> Unit,
+    onDelete: (String) -> Unit
 ) {
     var isEditing by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
     var title by remember { mutableStateOf(trip.title) }
     var description by remember { mutableStateOf(trip.description) }
     var showRoute by remember { mutableStateOf(false) }
@@ -96,6 +98,9 @@ fun TripDetailScreen(
                     if (!isEditing) {
                         IconButton(onClick = { isEditing = true }) {
                             Icon(Icons.Default.Edit, contentDescription = "Modifier")
+                        }
+                        IconButton(onClick = { showDeleteDialog = true }) {
+                            Icon(Icons.Default.Delete, contentDescription = "Supprimer", tint = Color.Red)
                         }
                     }
                 }
@@ -135,16 +140,32 @@ fun TripDetailScreen(
                     Text(stringResource(R.string.save))
                 }
             } else {
-                Text("📌 $title", style = MaterialTheme.typography.headlineSmall)
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(description, style = MaterialTheme.typography.bodyLarge)
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    "📅 Date : ${trip.date}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    elevation = CardDefaults.cardElevation(4.dp),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = title,
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = description,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "📅 ${trip.date}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                }
 
                 // Carte avec les points
                 if (startPosition != null && endPosition != null) {
@@ -152,7 +173,8 @@ fun TripDetailScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(300.dp),
-                        elevation = CardDefaults.cardElevation(4.dp)
+                        elevation = CardDefaults.cardElevation(4.dp),
+                        shape = RoundedCornerShape(12.dp)
                     ) {
                         Box(modifier = Modifier.fillMaxSize()) {
                             GoogleMap(
@@ -194,13 +216,6 @@ fun TripDetailScreen(
                             // Bouton flottant avec icône de voiture
                             FloatingActionButton(
                                 onClick = {
-                                    Log.d(TAG, "Bouton cliqué - showRoute: $showRoute")
-                                    Toast.makeText(context, "Chargement de l'itinéraire...", Toast.LENGTH_SHORT).show()
-                                    
-                                    // Vérifier les positions
-                                    Log.d(TAG, "Position de départ: lat=${startPosition.latitude}, lng=${startPosition.longitude}")
-                                    Log.d(TAG, "Position d'arrivée: lat=${endPosition.latitude}, lng=${endPosition.longitude}")
-                                    
                                     showRoute = !showRoute
                                     if (showRoute) {
                                         scope.launch {
@@ -221,14 +236,12 @@ fun TripDetailScreen(
                                                     val lat = startPosition.latitude + (latDiff * fraction)
                                                     val lng = startPosition.longitude + (lngDiff * fraction)
                                                     points.add(LatLng(lat, lng))
-                                                    Log.d(TAG, "Point intermédiaire $i: lat=$lat, lng=$lng")
                                                 }
                                                 
                                                 // Point d'arrivée
                                                 points.add(LatLng(endPosition.latitude, endPosition.longitude))
                                                 
                                                 routePoints = points
-                                                Log.d(TAG, "Itinéraire simulé créé avec ${points.size} points")
                                                 Toast.makeText(context, "Itinéraire chargé !", Toast.LENGTH_SHORT).show()
                                                 
                                             } catch (e: Exception) {
@@ -241,7 +254,6 @@ fun TripDetailScreen(
                                         }
                                     } else {
                                         routePoints = emptyList()
-                                        Log.d(TAG, "Retour à la ligne droite")
                                         Toast.makeText(context, "Retour à la ligne droite", Toast.LENGTH_SHORT).show()
                                     }
                                 },
@@ -259,5 +271,29 @@ fun TripDetailScreen(
                 }
             }
         }
+    }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Supprimer le voyage ?") },
+            text = { Text("Es-tu sûr de vouloir supprimer \"${trip.title}\" ?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onDelete(trip.id)
+                        showDeleteDialog = false
+                        navController.popBackStack()
+                    }
+                ) {
+                    Text("Oui", color = Color.Red)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Annuler")
+                }
+            }
+        )
     }
 }

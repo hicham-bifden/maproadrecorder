@@ -135,6 +135,12 @@ class MainActivity : ComponentActivity() {
                                         }
                                         tripsList.value = updatedList
                                         navController.popBackStack()
+                                    },
+                                    onDelete = { tripId ->
+                                        // Mettre à jour la liste des voyages
+                                        val updatedList = tripsList.value.filter { it.id != tripId }
+                                        tripsList.value = updatedList
+                                        navController.popBackStack()
                                     }
                                 )
                             } ?: Text("Voyage introuvable")

@@ -114,18 +114,19 @@ fun MainScreen(
             }
             composable("tripDetail/{tripId}") { backStackEntry ->
                 val tripId = backStackEntry.arguments?.getString("tripId")
-                val selectedTrip = viewModel.trips.value.find { it.id == tripId }
-
-                selectedTrip?.let {
+                val trip = viewModel.trips.value.find { it.id == tripId }
+                if (trip != null) {
                     TripDetailScreen(
                         navController = navController,
-                        trip = it,
+                        trip = trip,
                         onSave = { updatedTrip ->
                             viewModel.updateTrip(updatedTrip)
-                            navController.popBackStack()
+                        },
+                        onDelete = { tripId ->
+                            viewModel.deleteTrip(tripId)
                         }
                     )
-                } ?: Text("Voyage introuvable")
+                }
             }
         }
     }
