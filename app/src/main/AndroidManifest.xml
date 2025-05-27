@@ -21,7 +21,8 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyA5bm2TRpXSpAKWUCk5CzeQy-fwO7n3Pq4"
+            android:value="git merge screenMaps
+"
             tools:replace="android:value"/>
 
         <activity
