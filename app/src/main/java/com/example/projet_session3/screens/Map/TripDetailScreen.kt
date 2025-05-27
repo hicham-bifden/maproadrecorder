@@ -66,23 +66,41 @@ fun TripDetailScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var title by remember { mutableStateOf(trip.title) }
     var description by remember { mutableStateOf(trip.description) }
-    var showRoute by remember { mutableStateOf(false) }
-    var routePoints by remember { mutableStateOf<List<LatLng>>(emptyList()) }
-    val scope = rememberCoroutineScope()
-    val context = LocalContext.current
-
-    // Récupérer les points de départ et d'arrivée
+    
     val startPosition = trip.positions.firstOrNull()
     val endPosition = trip.positions.lastOrNull()
-
-    // Calculer le centre de la carte
+    
     val center = if (startPosition != null && endPosition != null) {
         LatLng(
             (startPosition.latitude + endPosition.latitude) / 2,
             (startPosition.longitude + endPosition.longitude) / 2
         )
     } else {
-        LatLng(45.551164, -73.639164) // Position par défaut (Montréal)
+        LatLng(45.551164, -73.639164) // Montréal par défaut
+    }
+
+    val routePoints = remember(startPosition, endPosition) {
+        if (startPosition != null && endPosition != null) {
+            val points = mutableListOf<LatLng>()
+            
+            points.add(LatLng(startPosition.latitude, startPosition.longitude))
+            
+            val latDiff = endPosition.latitude - startPosition.latitude
+            val lngDiff = endPosition.longitude - startPosition.longitude
+            
+            for (i in 1..5) {
+                val fraction = i / 6.0
+                val lat = startPosition.latitude + (latDiff * fraction)
+                val lng = startPosition.longitude + (lngDiff * fraction)
+                val deviation = 0.001 * Math.sin(i * Math.PI / 3)
+                points.add(LatLng(lat + deviation, lng + deviation))
+            }
+            
+            points.add(LatLng(endPosition.latitude, endPosition.longitude))
+            points
+        } else {
+            emptyList()
+        }
     }
 
     Scaffold(
@@ -167,7 +185,6 @@ fun TripDetailScreen(
                     }
                 }
 
-                // Carte avec les points
                 if (startPosition != null && endPosition != null) {
                     Card(
                         modifier = Modifier
@@ -176,96 +193,30 @@ fun TripDetailScreen(
                         elevation = CardDefaults.cardElevation(4.dp),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            GoogleMap(
-                                modifier = Modifier.fillMaxSize(),
-                                cameraPositionState = rememberCameraPositionState {
-                                    position = CameraPosition.fromLatLngZoom(center, 12f)
-                                }
-                            ) {
-                                Marker(
-                                    state = MarkerState(
-                                        position = LatLng(startPosition.latitude, startPosition.longitude)
-                                    ),
-                                    title = "Départ"
-                                )
-
-                                Marker(
-                                    state = MarkerState(
-                                        position = LatLng(endPosition.latitude, endPosition.longitude)
-                                    ),
-                                    title = "Arrivée"
-                                )
-
-                                if (showRoute && routePoints.isNotEmpty()) {
-                                    Polyline(
-                                        points = routePoints,
-                                        color = MaterialTheme.colorScheme.primary
-                                    )
-                                } else {
-                                    Polyline(
-                                        points = listOf(
-                                            LatLng(startPosition.latitude, startPosition.longitude),
-                                            LatLng(endPosition.latitude, endPosition.longitude)
-                                        ),
-                                        color = MaterialTheme.colorScheme.primary
-                                    )
-                                }
+                        GoogleMap(
+                            modifier = Modifier.fillMaxSize(),
+                            cameraPositionState = rememberCameraPositionState {
+                                position = CameraPosition.fromLatLngZoom(center, 12f)
                             }
+                        ) {
+                            Marker(
+                                state = MarkerState(
+                                    position = LatLng(startPosition.latitude, startPosition.longitude)
+                                ),
+                                title = "Départ"
+                            )
 
-                            // Bouton flottant avec icône de voiture
-                            FloatingActionButton(
-                                onClick = {
-                                    showRoute = !showRoute
-                                    if (showRoute) {
-                                        scope.launch {
-                                            try {
-                                                // Créer une liste de points intermédiaires pour simuler un itinéraire
-                                                val points = mutableListOf<LatLng>()
-                                                
-                                                // Point de départ
-                                                points.add(LatLng(startPosition.latitude, startPosition.longitude))
-                                                
-                                                // Points intermédiaires
-                                                val latDiff = endPosition.latitude - startPosition.latitude
-                                                val lngDiff = endPosition.longitude - startPosition.longitude
-                                                
-                                                // Ajouter 5 points intermédiaires
-                                                for (i in 1..5) {
-                                                    val fraction = i / 6.0
-                                                    val lat = startPosition.latitude + (latDiff * fraction)
-                                                    val lng = startPosition.longitude + (lngDiff * fraction)
-                                                    points.add(LatLng(lat, lng))
-                                                }
-                                                
-                                                // Point d'arrivée
-                                                points.add(LatLng(endPosition.latitude, endPosition.longitude))
-                                                
-                                                routePoints = points
-                                                Toast.makeText(context, "Itinéraire chargé !", Toast.LENGTH_SHORT).show()
-                                                
-                                            } catch (e: Exception) {
-                                                Log.e(TAG, "Erreur détaillée", e)
-                                                Log.e(TAG, "Message d'erreur: ${e.message}")
-                                                Log.e(TAG, "Stack trace: ${e.stackTraceToString()}")
-                                                Toast.makeText(context, "Erreur: ${e.message}", Toast.LENGTH_LONG).show()
-                                                showRoute = false
-                                            }
-                                        }
-                                    } else {
-                                        routePoints = emptyList()
-                                        Toast.makeText(context, "Retour à la ligne droite", Toast.LENGTH_SHORT).show()
-                                    }
-                                },
-                                modifier = Modifier
-                                    .padding(16.dp)
-                                    .align(Alignment.BottomEnd)
-                            ) {
-                                Icon(
-                                    imageVector = if (showRoute) Icons.Default.DirectionsWalk else Icons.Default.DirectionsCar,
-                                    contentDescription = if (showRoute) "Afficher ligne droite" else "Afficher itinéraire routier"
-                                )
-                            }
+                            Marker(
+                                state = MarkerState(
+                                    position = LatLng(endPosition.latitude, endPosition.longitude)
+                                ),
+                                title = "Arrivée"
+                            )
+
+                            Polyline(
+                                points = routePoints,
+                                color = MaterialTheme.colorScheme.primary
+                            )
                         }
                     }
                 }
